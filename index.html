@@ -163,7 +163,7 @@ const removeProduct = id => write('DELETE', API+'?id=eq.'+encodeURIComponent(id)
 
 let tt;
 function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),1800); }
-const money = n => Number(n||0).toLocaleString('es',{style:'currency',currency:'USD'});
+const money = n => Number(n||0).toLocaleString('es-GT',{style:'currency',currency:'GTQ'});
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function resizeImage(file, max=400){
