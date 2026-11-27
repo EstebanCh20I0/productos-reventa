@@ -2,281 +2,316 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Gestor de Productos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogo</title>
 <style>
-:root{--bg:#f5f6f8;--card:#fff;--text:#1c1f26;--muted:#6b7280;--line:#e3e6eb;--accent:#2563eb;--accent-t:#fff;--danger:#dc2626;--ok:#16a34a;color-scheme:light;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111317;--card:#1b1e25;--text:#e8eaee;--muted:#9aa1ad;--line:#2a2e38;--accent:#4f8cff;--accent-t:#0b1020;--danger:#f87171;--ok:#4ade80;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#111317;--card:#1b1e25;--text:#e8eaee;--muted:#9aa1ad;--line:#2a2e38;--accent:#4f8cff;--accent-t:#0b1020;--danger:#f87171;--ok:#4ade80;color-scheme:dark}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
+:root{--bg:#f4f5f7;--card:#fff;--text:#14171f;--muted:#667085;--line:#e4e7ec;--accent:#2563eb;--accent-t:#fff;--danger:#dc2626;--ok:#16a34a;--warn:#d97706;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#181b22;--text:#e9ebf0;--muted:#98a0ae;--line:#272b35;--accent:#4f8cff;--accent-t:#08101f;--danger:#f87171;--ok:#4ade80;--warn:#fbbf24;color-scheme:dark}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45}
-.wrap{max-width:1000px;margin:0 auto;padding:20px 16px 60px}
-h1{font-size:1.5rem;margin:0 0 4px}
-.sub{color:var(--muted);margin:0 0 18px;font-size:.92rem}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
-.stat b{display:block;font-size:1.25rem}.stat span{color:var(--muted);font-size:.8rem}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:18px}
-.panel h2{font-size:1.05rem;margin:0 0 12px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.full{grid-column:1/-1}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line)}
+.bar{max-width:1150px;margin:0 auto;padding:12px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:800;font-size:1.2rem;margin-right:auto}
+.bar input[type=search]{flex:1;min-width:160px;max-width:340px}
+.wrap{max-width:1150px;margin:0 auto;padding:18px 16px 70px}
+input,textarea,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);font:inherit}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px}
+textarea{resize:vertical;min-height:80px}
 label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:4px}
-input,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);font:inherit}
-input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
-textarea{resize:vertical;min-height:70px}
-button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--text);padding:9px 14px}
+button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--text);padding:8px 14px}
 button.primary{background:var(--accent);color:var(--accent-t);border-color:var(--accent);font-weight:600}
 button.danger{color:var(--danger)}
-button:hover{filter:brightness(.96)}
-.imgpick{display:flex;align-items:center;gap:12px}
-.thumb{width:84px;height:84px;border-radius:10px;border:1px dashed var(--line);background:var(--bg);object-fit:cover;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.7rem;text-align:center;flex:none;overflow:hidden}
-.toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.toolbar input{flex:1;min-width:180px}
-.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-.item{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-.item .pic{aspect-ratio:4/3;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:2rem}
-.item .pic img{width:100%;height:100%;object-fit:cover}
-.item .body{padding:12px;flex:1;display:flex;flex-direction:column;gap:4px}
-.item h3{margin:0;font-size:1rem}
-.item p{margin:0;color:var(--muted);font-size:.85rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.price{font-weight:700;font-size:1.1rem}
-.qty{font-size:.8rem;padding:2px 8px;border-radius:99px;background:var(--bg);border:1px solid var(--line);align-self:flex-start}
-.qty.low{color:var(--danger);border-color:var(--danger)}
-.qty.ok{color:var(--ok)}
-.actions{display:flex;gap:8px;padding:0 12px 12px}
-.actions button{flex:1;padding:7px}
-.empty{text-align:center;color:var(--muted);padding:40px 10px}
-.sync{font-size:.8rem;color:var(--muted)}.gate{max-width:420px;margin:12vh auto;text-align:center}.warn{background:var(--card);border:1px solid var(--danger);border-radius:12px;padding:14px;margin-bottom:16px;font-size:.9rem}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--text);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:.88rem;opacity:0;pointer-events:none;transition:opacity .25s}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border-radius:99px;padding:6px 14px;font-size:.88rem}
+.chip.on{background:var(--accent);color:var(--accent-t);border-color:var(--accent)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.tools select{width:auto}
+.tools label{display:flex;gap:6px;align-items:center;margin:0;font-size:.88rem;color:var(--text)}
+.tools label input{width:auto}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat b{display:block;font-size:1.2rem}.stat span{color:var(--muted);font-size:.78rem}
+.adminbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.pic{position:relative;aspect-ratio:1/1;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:2.4rem;cursor:pointer}
+.pic img{width:100%;height:100%;object-fit:cover}
+.badge{position:absolute;top:10px;left:10px;background:var(--danger);color:#fff;font-weight:700;font-size:.8rem;padding:3px 9px;border-radius:99px}
+.sold{position:absolute;inset:0;background:rgba(0,0,0,.5);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem}
+.body{padding:12px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
+.cat{font-size:.72rem;font-weight:600;padding:2px 9px;border-radius:99px;align-self:flex-start;color:#fff}
+.body h3{margin:0;font-size:1rem;cursor:pointer}
+.price{font-size:1.15rem;font-weight:800}
+.old{color:var(--muted);text-decoration:line-through;font-weight:400;font-size:.88rem;margin-left:6px}
+.stock{font-size:.8rem}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--danger)}
+.acts{display:flex;gap:8px;padding:0 14px 14px}.acts button{flex:1;padding:6px}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:50px 10px}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--text);width:min(560px,94vw);padding:20px;max-height:92vh}
+dialog::backdrop{background:rgba(0,0,0,.55)}
+dialog h2{margin:0 0 14px;font-size:1.15rem}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:12px}.full{grid-column:1/-1}
+.row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.big{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:var(--bg);margin-bottom:12px;display:flex;align-items:center;justify-content:center;font-size:3rem}
+.thumb{width:80px;height:80px;border-radius:10px;border:1px dashed var(--line);background:var(--bg);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--muted);flex:none}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.crow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.crow .dot{width:14px;height:14px;border-radius:50%;flex:none}.crow span{flex:1}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:var(--text);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:.88rem;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
 .toast.show{opacity:1}
-dialog{border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--text);width:min(520px,94vw);padding:18px}
-dialog::backdrop{background:rgba(0,0,0,.5)}
-.row{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
-@media(max-width:520px){.grid{grid-template-columns:1fr}}
+[hidden]{display:none!important}
+@media(max-width:520px){.f{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr);gap:10px}}
 </style>
 </head>
 <body>
+<header><div class="bar">
+  <div class="brand" id="brand">🛍️ Mi Tienda</div>
+  <input id="q" type="search" placeholder="Buscar productos…">
+  <button id="loginBtn">Administrador</button>
+  <button id="logoutBtn" hidden>Salir</button>
+</div></header>
+
 <div class="wrap">
-  <h1>📦 Gestor de Productos</h1>
-  <p class="sub">Agrega, edita y elimina productos. Los datos se guardan en la nube y los ven todos los que tengan el código. <span class="sync" id="sync">Conectando…</span> <button id="codeBtn" style="padding:2px 8px;font-size:.75rem">Cambiar código</button></p>
-  <div class="warn" id="cfgWarn" hidden>Falta configurar Supabase: edita <b>SUPABASE_URL</b> y <b>SUPABASE_KEY</b> al inicio del script.</div>
-
-  <div class="stats">
-    <div class="stat"><b id="sCount">0</b><span>Productos</span></div>
-    <div class="stat"><b id="sUnits">0</b><span>Unidades en stock</span></div>
-    <div class="stat"><b id="sValue">0</b><span>Valor del inventario</span></div>
-  </div>
-
-  <div class="panel">
-    <h2>Agregar producto</h2>
-    <div class="grid">
-      <div class="full"><label for="aName">Nombre</label><input id="aName" placeholder="Ej. Camisa azul"></div>
-      <div><label for="aPrice">Precio</label><input id="aPrice" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00"></div>
-      <div><label for="aQty">Cantidad</label><input id="aQty" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></div>
-      <div class="full"><label for="aDesc">Descripción</label><textarea id="aDesc" placeholder="Describe el producto"></textarea></div>
-      <div class="full imgpick">
-        <div class="thumb" id="aThumb">Sin imagen</div>
-        <div><label for="aFile">Imagen del producto</label><input id="aFile" type="file" accept="image/*"></div>
-      </div>
-      <div class="full"><button class="primary" id="addBtn">Agregar producto</button></div>
+  <div id="adminArea" hidden>
+    <div class="stats">
+      <div class="stat"><b id="s1">0</b><span>Productos</span></div>
+      <div class="stat"><b id="s2">0</b><span>Unidades</span></div>
+      <div class="stat"><b id="s3">0</b><span>Valor del inventario</span></div>
+      <div class="stat"><b id="s4">0</b><span>En oferta</span></div>
+      <div class="stat"><b id="s5">0</b><span>Stock bajo / agotado</span></div>
+    </div>
+    <div class="adminbar">
+      <button class="primary" id="newProd">+ Nuevo producto</button>
+      <button id="manCats">Categorías</button>
+      <button id="exportBtn">Exportar respaldo</button>
     </div>
   </div>
-
-  <div class="toolbar">
-    <input id="search" type="search" placeholder="Buscar producto…">
-    <button id="exportBtn">Exportar respaldo</button>
-    <button id="importBtn">Importar</button>
-    <input id="importFile" type="file" accept="application/json" hidden>
+  <div class="chips" id="chips"></div>
+  <div class="tools">
+    <select id="sort">
+      <option value="new">Más recientes</option><option value="name">Nombre A–Z</option>
+      <option value="pa">Precio: menor a mayor</option><option value="pd">Precio: mayor a menor</option>
+    </select>
+    <label><input type="checkbox" id="offOnly"> Solo ofertas</label>
+    <label><input type="checkbox" id="inStock"> Solo disponibles</label>
   </div>
-  <div class="list" id="list"></div>
+  <div class="grid" id="grid"></div>
 </div>
 
-<dialog id="dlg">
-  <h2 style="margin:0 0 12px;font-size:1.1rem">Editar producto</h2>
-  <div class="grid">
-    <div class="full"><label for="eName">Nombre</label><input id="eName"></div>
-    <div><label for="ePrice">Precio</label><input id="ePrice" type="number" min="0" step="0.01" inputmode="decimal"></div>
-    <div><label for="eQty">Cantidad</label><input id="eQty" type="number" min="0" step="1" inputmode="numeric"></div>
-    <div class="full"><label for="eDesc">Descripción</label><textarea id="eDesc"></textarea></div>
-    <div class="full imgpick">
-      <div class="thumb" id="eThumb">Sin imagen</div>
-      <div><label for="eFile">Cambiar imagen</label><input id="eFile" type="file" accept="image/*">
-      <button type="button" id="eRemoveImg" style="margin-top:6px;padding:5px 10px;font-size:.8rem">Quitar imagen</button></div>
+<dialog id="detail"><div id="detailBody"></div><div class="row"><button id="detailClose">Cerrar</button></div></dialog>
+
+<dialog id="loginDlg">
+  <h2>Acceso de administrador</h2>
+  <div class="f"><div class="full"><label for="lEmail">Correo</label><input id="lEmail" type="email" autocomplete="username"></div>
+  <div class="full"><label for="lPass">Contraseña</label><input id="lPass" type="password" autocomplete="current-password"></div></div>
+  <div class="row"><button id="lCancel">Cancelar</button><button class="primary" id="lGo">Entrar</button></div>
+</dialog>
+
+<dialog id="prodDlg">
+  <h2 id="pTitle">Producto</h2>
+  <div class="f">
+    <div class="full"><label for="pName">Nombre</label><input id="pName"></div>
+    <div><label for="pPrice">Precio (Q)</label><input id="pPrice" type="number" min="0" step="0.01" inputmode="decimal"></div>
+    <div><label for="pQty">Cantidad</label><input id="pQty" type="number" min="0" step="1" inputmode="numeric"></div>
+    <div><label for="pCat">Categoría</label><select id="pCat"></select></div>
+    <div><label for="pDisc">Descuento (%)</label><input id="pDisc" type="number" min="0" max="100" step="1" inputmode="numeric"></div>
+    <div class="full"><label for="pEnd">La oferta termina el (opcional)</label><input id="pEnd" type="date"></div>
+    <div class="full"><label for="pDesc">Descripción</label><textarea id="pDesc"></textarea></div>
+    <div class="full" style="display:flex;gap:12px;align-items:center">
+      <div class="thumb" id="pThumb">Sin imagen</div>
+      <div><label for="pFile">Imagen</label><input id="pFile" type="file" accept="image/*"><button type="button" id="pNoImg" style="margin-top:6px;padding:4px 10px;font-size:.8rem">Quitar imagen</button></div>
     </div>
   </div>
-  <div class="row"><button id="eCancel">Cancelar</button><button class="primary" id="eSave">Guardar cambios</button></div>
+  <div class="row"><button id="pCancel">Cancelar</button><button class="primary" id="pSave">Guardar</button></div>
+</dialog>
+
+<dialog id="catDlg">
+  <h2>Categorías</h2>
+  <div id="catList"></div>
+  <div class="f" style="margin-top:14px;grid-template-columns:1fr 64px auto;align-items:end">
+    <div><label for="cName">Nueva categoría</label><input id="cName" placeholder="Ej. Audífonos"></div>
+    <div><label for="cColor">Color</label><input id="cColor" type="color" value="#2563eb" style="padding:2px;height:42px"></div>
+    <button class="primary" id="cAdd">Crear</button>
+  </div>
+  <div class="row"><button id="cClose">Cerrar</button></div>
 </dialog>
 <div class="toast" id="toast"></div>
 
 <script>
-// ====== CONFIGURACIÓN (pega aquí tus datos de Supabase) ======
+// ====== CONFIGURACIÓN ======
 const SUPABASE_URL = 'https://qkoswkwdeckjfvvswngs.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_WhuSfN5UpTYaa4nKiiT_aQ_qBCtAYMc';
-// =============================================================
-const API = SUPABASE_URL + '/rest/v1/productos';
-let products = [];
-let newImg = '', editImg = '', editId = null;
+const STORE_NAME = '🛍️ Mi Tienda';
+// ===========================
 const $ = id => document.getElementById(id);
-const configured = !SUPABASE_URL.includes('TU-PROYECTO') && !SUPABASE_KEY.includes('TU_ANON');
+const REST = SUPABASE_URL + '/rest/v1/', AUTH = SUPABASE_URL + '/auth/v1/';
+let cats = [], prods = [], session = null, editId = null, editImg = '', curCat = '';
+try { session = JSON.parse(localStorage.getItem('sess') || 'null'); } catch (e) {}
+$('brand').textContent = STORE_NAME; document.title = STORE_NAME.replace(/^\S+\s/, '');
 
-function getCode(){ try { return localStorage.getItem('acceso_codigo') || ''; } catch(e){ return window._code||''; } }
-function setCode(c){ try { localStorage.setItem('acceso_codigo', c); } catch(e){ window._code = c; } }
-function askCode(force){
-  let c = getCode();
-  if(!c || force){ c = (prompt('Ingresa el código de acceso compartido:') || '').trim(); if(c) setCode(c); }
-  return c;
-}
-function headers(extra){
-  const h = {'apikey':SUPABASE_KEY,'Content-Type':'application/json','x-access-code':getCode()};
-  if(SUPABASE_KEY.startsWith('eyJ')) h['Authorization'] = 'Bearer '+SUPABASE_KEY;
-  return Object.assign(h, extra||{});
-}
-const fromRow = r => ({id:r.id,name:r.name,price:+r.price||0,qty:+r.qty||0,desc:r.descr||'',img:r.img||''});
-const toRow = p => ({id:p.id,name:p.name,price:p.price,qty:p.qty,descr:p.desc,img:p.img,updated_at:new Date().toISOString()});
-function setSync(t){ $('sync').textContent = t; }
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => Number(n || 0).toLocaleString('es-GT', {style:'currency', currency:'GTQ'});
+const today = () => new Date().toISOString().slice(0, 10);
+const onSale = p => p.discount > 0 && (!p.offer_end || p.offer_end >= today());
+const fprice = p => onSale(p) ? p.price * (1 - p.discount / 100) : p.price;
+let tt; function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2200); }
 
+/* ---------- sesión ---------- */
+function saveSess(j){ session = {token:j.access_token, refresh:j.refresh_token, exp:Date.now()/1000 + j.expires_in, email:(j.user&&j.user.email)||(session&&session.email)||''}; try{localStorage.setItem('sess',JSON.stringify(session))}catch(e){} }
+function logout(expired){ session = null; try{localStorage.removeItem('sess')}catch(e){} if(expired) toast('Sesión vencida: vuelve a entrar'); ui(); render(); }
+async function token(){
+  if(!session) return null;
+  if(session.exp - Date.now()/1000 < 60){
+    try {
+      const r = await fetch(AUTH+'token?grant_type=refresh_token', {method:'POST', headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'}, body:JSON.stringify({refresh_token:session.refresh})});
+      if(!r.ok) throw 0; saveSess(await r.json());
+    } catch(e){ logout(true); return null; }
+  }
+  return session.token;
+}
+async function api(path, o = {}){
+  const h = {apikey:SUPABASE_KEY, 'Content-Type':'application/json'};
+  const t = await token(); if(t) h.Authorization = 'Bearer ' + t;
+  if(o.prefer) h.Prefer = o.prefer;
+  const r = await fetch(REST + path, {method:o.method||'GET', headers:h, body:o.body?JSON.stringify(o.body):undefined});
+  if(!r.ok){ console.error('Supabase', r.status, await r.text().catch(()=>'')); throw new Error(r.status); }
+  return o.method && o.method !== 'GET' ? null : r.json();
+}
 async function load(silent){
-  if(!configured) return;
   try {
-    const r = await fetch(API+'?select=*&order=updated_at.desc', {headers:headers()});
-    if(!r.ok){ const t = await r.text().catch(()=>''); console.error('Supabase', r.status, t); setSync('⚠ Error '+r.status); toast('Error '+r.status+' al cargar'); return; }
-    products = (await r.json()).map(fromRow);
-    setSync('✓ Sincronizado '+new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}));
-    if(!$('dlg').open) render();
-  } catch(e){ console.error(e); setSync('⚠ Sin conexión (revisa la URL)'); if(!silent) toast('No se pudo conectar: revisa SUPABASE_URL'); }
+    [cats, prods] = await Promise.all([api('tienda_categorias?select=*&order=name.asc'), api('tienda_productos?select=*&order=updated_at.desc')]);
+    prods = prods.map(p => ({...p, price:+p.price||0, qty:+p.qty||0, discount:+p.discount||0}));
+    render();
+  } catch(e){ if(!silent) toast('No se pudo cargar el catálogo (' + e.message + ')'); }
 }
-async function write(method, url, body){
-  setSync('Guardando…');
-  try {
-    const r = await fetch(url, {method, headers:headers(method==='POST'?{'Prefer':'resolution=merge-duplicates,return=minimal'}:{'Prefer':'return=minimal'}), body: body?JSON.stringify(body):undefined});
-    if(!r.ok){
-      if(r.status===401||r.status===403){ toast('Código incorrecto o sin permiso'); } else { toast('Error al guardar ('+r.status+')'); }
-      await load(true); return false;
-    }
-    toast('Cambios guardados ✓'); setSync('✓ Sincronizado'); return true;
-  } catch(e){ toast('Sin conexión: no se guardó'); await load(true); return false; }
+async function save(fn, okMsg){
+  try { await fn(); toast(okMsg || 'Guardado ✓'); await load(true); return true; }
+  catch(e){ toast(e.message==='401'||e.message==='403' ? 'Sin permiso: inicia sesión como administrador' : 'Error al guardar ('+e.message+')'); return false; }
 }
-const saveProduct = p => write('POST', API, toRow(p));
-const removeProduct = id => write('DELETE', API+'?id=eq.'+encodeURIComponent(id));
 
-let tt;
-function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),1800); }
-const money = n => Number(n||0).toLocaleString('es-GT',{style:'currency',currency:'GTQ'});
-const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* ---------- interfaz ---------- */
+function ui(){
+  const a = !!session;
+  $('adminArea').hidden = !a; $('logoutBtn').hidden = !a; $('loginBtn').hidden = a;
+}
+const catOf = id => cats.find(c => c.id === id);
+function render(){
+  const q = $('q').value.trim().toLowerCase();
+  // chips
+  $('chips').innerHTML = '<button class="chip '+(curCat===''?'on':'')+'" data-cat="">Todos</button>' +
+    cats.map(c => '<button class="chip '+(curCat===c.id?'on':'')+'" data-cat="'+esc(c.id)+'">'+esc(c.name)+'</button>').join('');
+  let list = prods.filter(p => (!curCat || p.cat_id === curCat) && (!q || (p.name+' '+(p.descr||'')).toLowerCase().includes(q)) && (!$('offOnly').checked || onSale(p)) && (!$('inStock').checked || p.qty > 0));
+  const s = $('sort').value;
+  if(s==='name') list.sort((a,b)=>a.name.localeCompare(b.name));
+  if(s==='pa') list.sort((a,b)=>fprice(a)-fprice(b));
+  if(s==='pd') list.sort((a,b)=>fprice(b)-fprice(a));
+  $('grid').innerHTML = list.length ? list.map(card).join('') : '<div class="empty">No hay productos para mostrar.</div>';
+  if(session){
+    $('s1').textContent = prods.length; $('s2').textContent = prods.reduce((a,p)=>a+p.qty,0);
+    $('s3').textContent = money(prods.reduce((a,p)=>a+p.qty*fprice(p),0));
+    $('s4').textContent = prods.filter(onSale).length; $('s5').textContent = prods.filter(p=>p.qty<=5).length;
+  }
+}
+function stockTxt(p){ return p.qty<=0 ? '<span class="stock bad">Agotado</span>' : p.qty<=5 ? '<span class="stock warn">¡Últimas '+p.qty+' unidades!</span>' : '<span class="stock ok">Disponible</span>'; }
+function priceHtml(p){ return onSale(p) ? '<span class="price">'+money(fprice(p))+'</span><span class="old">'+money(p.price)+'</span>' : '<span class="price">'+money(p.price)+'</span>'; }
+function card(p){
+  const c = catOf(p.cat_id);
+  return '<div class="card"><div class="pic" data-view="'+esc(p.id)+'">'+(p.img?'<img loading="lazy" src="'+p.img+'" alt="'+esc(p.name)+'">':'🛍️')+
+    (onSale(p)?'<span class="badge">-'+Math.round(p.discount)+'%</span>':'')+(p.qty<=0?'<div class="sold">Agotado</div>':'')+'</div>'+
+    '<div class="body">'+(c?'<span class="cat" style="background:'+esc(c.color)+'">'+esc(c.name)+'</span>':'')+
+    '<h3 data-view="'+esc(p.id)+'">'+esc(p.name)+'</h3><div>'+priceHtml(p)+'</div>'+stockTxt(p)+'</div>'+
+    (session?'<div class="acts"><button data-edit="'+esc(p.id)+'">Editar</button><button class="danger" data-del="'+esc(p.id)+'">Eliminar</button></div>':'')+'</div>';
+}
+function showDetail(id){
+  const p = prods.find(x => x.id === id); if(!p) return; const c = catOf(p.cat_id);
+  $('detailBody').innerHTML = '<div class="big">'+(p.img?'<img src="'+p.img+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:12px">':'🛍️')+'</div>'+
+    (c?'<span class="cat" style="background:'+esc(c.color)+'">'+esc(c.name)+'</span>':'')+
+    '<h2 style="margin:8px 0 4px;font-size:1.3rem">'+esc(p.name)+'</h2><div style="margin-bottom:6px">'+priceHtml(p)+(onSale(p)?' <span class="badge" style="position:static;display:inline-block">-'+Math.round(p.discount)+'%</span>':'')+'</div>'+
+    (onSale(p)&&p.offer_end?'<div class="stock warn">Oferta válida hasta el '+esc(p.offer_end.split('-').reverse().join('/'))+'</div>':'')+
+    '<div style="margin:6px 0">'+stockTxt(p)+(p.qty>0?' <span class="stock" style="color:var(--muted)">('+p.qty+' en stock)</span>':'')+'</div>'+
+    '<p style="white-space:pre-wrap;color:var(--muted);margin:10px 0 0">'+(esc(p.descr)||'Sin descripción.')+'</p>';
+  $('detail').showModal();
+}
 
-function resizeImage(file, max=400){
-  return new Promise((res,rej)=>{
-    const fr = new FileReader();
-    fr.onerror = rej;
-    fr.onload = () => {
-      const img = new Image();
-      img.onerror = rej;
-      img.onload = () => {
-        const k = Math.min(1, max/Math.max(img.width,img.height));
-        const c = document.createElement('canvas');
-        c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
-        c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-        res(c.toDataURL('image/jpeg',0.75));
-      };
-      img.src = fr.result;
-    };
+/* ---------- imagen ---------- */
+function resize(file, max = 500){
+  return new Promise((res, rej) => {
+    const fr = new FileReader(); fr.onerror = rej;
+    fr.onload = () => { const im = new Image(); im.onerror = rej; im.onload = () => {
+      const k = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas');
+      c.width = Math.round(im.width*k); c.height = Math.round(im.height*k);
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); res(c.toDataURL('image/jpeg', .78)); }; im.src = fr.result; };
     fr.readAsDataURL(file);
   });
 }
-function setThumb(el, src){ el.innerHTML = src ? '<img src="'+src+'" alt="" style="width:100%;height:100%;object-fit:cover">' : 'Sin imagen'; }
+const thumb = s => { $('pThumb').innerHTML = s ? '<img src="'+s+'" alt="">' : 'Sin imagen'; };
 
-function render(){
-  const q = $('search').value.trim().toLowerCase();
-  const shown = products.filter(p => !q || (p.name+' '+p.desc).toLowerCase().includes(q));
-  $('sCount').textContent = products.length;
-  $('sUnits').textContent = products.reduce((a,p)=>a+p.qty,0);
-  $('sValue').textContent = money(products.reduce((a,p)=>a+p.qty*p.price,0));
-  const list = $('list');
-  if(!shown.length){ list.innerHTML = '<div class="empty" style="grid-column:1/-1">'+(products.length?'Sin resultados.':'Aún no hay productos. ¡Agrega el primero!')+'</div>'; return; }
-  list.innerHTML = shown.map(p=>`
-    <div class="item">
-      <div class="pic">${p.img?`<img src="${p.img}" alt="${esc(p.name)}">`:'🛍️'}</div>
-      <div class="body">
-        <h3>${esc(p.name)}</h3>
-        <div class="price">${money(p.price)}</div>
-        <span class="qty ${p.qty<=5?'low':'ok'}">${p.qty} en stock</span>
-        <p>${esc(p.desc)}</p>
-      </div>
-      <div class="actions">
-        <button data-edit="${p.id}">Editar</button>
-        <button class="danger" data-del="${p.id}">Eliminar</button>
-      </div>
-    </div>`).join('');
-}
-
-$('aFile').addEventListener('change', async e=>{
-  const f = e.target.files[0]; if(!f) return;
-  try { newImg = await resizeImage(f); setThumb($('aThumb'), newImg); } catch(_){ toast('Imagen no válida'); }
-});
-$('addBtn').addEventListener('click', ()=>{
-  const name = $('aName').value.trim();
-  if(!name){ toast('Escribe un nombre'); $('aName').focus(); return; }
-  const p = {
-    id: Date.now().toString(36)+Math.random().toString(36).slice(2,6),
-    name, price: Math.max(0, parseFloat($('aPrice').value)||0),
-    qty: Math.max(0, parseInt($('aQty').value)||0),
-    desc: $('aDesc').value.trim(), img: newImg
-  };
-  products.unshift(p); saveProduct(p);
-  ['aName','aPrice','aQty','aDesc','aFile'].forEach(i=>$(i).value='');
-  newImg=''; setThumb($('aThumb'),''); render();
+/* ---------- eventos ---------- */
+$('q').addEventListener('input', render); $('sort').addEventListener('change', render);
+$('offOnly').addEventListener('change', render); $('inStock').addEventListener('change', render);
+$('chips').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if(b){ curCat = b.dataset.cat; render(); } });
+$('detailClose').onclick = () => $('detail').close();
+$('grid').addEventListener('click', e => {
+  const v = e.target.closest('[data-view]'), ed = e.target.closest('[data-edit]'), de = e.target.closest('[data-del]');
+  if(ed) openProd(ed.dataset.edit);
+  else if(de){ if(confirm('¿Eliminar este producto?')) save(() => api('tienda_productos?id=eq.'+encodeURIComponent(de.dataset.del), {method:'DELETE'}), 'Producto eliminado'); }
+  else if(v) showDetail(v.dataset.view);
 });
 
-$('list').addEventListener('click', e=>{
-  const ed = e.target.closest('[data-edit]'), de = e.target.closest('[data-del]');
-  if(ed){
-    const p = products.find(x=>x.id===ed.dataset.edit); if(!p) return;
-    editId = p.id; editImg = p.img||'';
-    $('eName').value=p.name; $('ePrice').value=p.price; $('eQty').value=p.qty; $('eDesc').value=p.desc;
-    $('eFile').value=''; setThumb($('eThumb'), editImg); $('dlg').showModal();
-  }
-  if(de && confirm('¿Eliminar este producto?')){
-    products = products.filter(x=>x.id!==de.dataset.del); removeProduct(de.dataset.del); render();
-  }
-});
-$('eFile').addEventListener('change', async e=>{
-  const f = e.target.files[0]; if(!f) return;
-  try { editImg = await resizeImage(f); setThumb($('eThumb'), editImg); } catch(_){ toast('Imagen no válida'); }
-});
-$('eRemoveImg').addEventListener('click', ()=>{ editImg=''; setThumb($('eThumb'),''); });
-$('eCancel').addEventListener('click', ()=>$('dlg').close());
-$('eSave').addEventListener('click', ()=>{
-  const p = products.find(x=>x.id===editId); if(!p) return;
-  const name = $('eName').value.trim();
-  if(!name){ toast('El nombre es obligatorio'); return; }
-  Object.assign(p,{name, price:Math.max(0,parseFloat($('ePrice').value)||0), qty:Math.max(0,parseInt($('eQty').value)||0), desc:$('eDesc').value.trim(), img:editImg});
-  saveProduct(p);
-  $('dlg').close(); render();
-});
-$('search').addEventListener('input', render);
-
-$('exportBtn').addEventListener('click', ()=>{
-  const blob = new Blob([JSON.stringify(products)],{type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='productos-respaldo.json'; a.click();
-});
-$('importBtn').addEventListener('click', ()=>$('importFile').click());
-$('importFile').addEventListener('change', async e=>{
-  const f = e.target.files[0]; if(!f) return;
+$('loginBtn').onclick = () => { $('lPass').value=''; $('loginDlg').showModal(); $('lEmail').focus(); };
+$('lCancel').onclick = () => $('loginDlg').close();
+$('lGo').onclick = async () => {
   try {
-    const data = JSON.parse(await f.text());
-    if(!Array.isArray(data)) throw 0;
-    products = data.map(p=>({id:String(p.id||Date.now()+Math.random()),name:String(p.name||''),price:+p.price||0,qty:+p.qty||0,desc:String(p.desc||''),img:String(p.img||'')}));
-    render(); write('POST', API, products.map(toRow));
-  } catch(_){ toast('Archivo de respaldo no válido'); }
-  e.target.value='';
-});
+    const r = await fetch(AUTH+'token?grant_type=password', {method:'POST', headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'}, body:JSON.stringify({email:$('lEmail').value.trim(), password:$('lPass').value})});
+    if(!r.ok) throw 0; saveSess(await r.json()); $('loginDlg').close(); ui(); render(); toast('Sesión iniciada ✓');
+  } catch(e){ toast('Correo o contraseña incorrectos'); }
+};
+$('lPass').addEventListener('keydown', e => { if(e.key==='Enter') $('lGo').click(); });
+$('logoutBtn').onclick = () => { logout(); toast('Sesión cerrada'); };
 
-$('codeBtn').addEventListener('click', ()=>{ askCode(true); load(); });
-if(!configured){ $('cfgWarn').hidden = false; setSync('Sin configurar'); }
-else { askCode(false); load(); setInterval(()=>{ if(!document.hidden) load(true); }, 6000); }
-render();
+function openProd(id){
+  const p = id ? prods.find(x => x.id === id) : null; editId = p ? p.id : null; editImg = p ? (p.img||'') : '';
+  $('pTitle').textContent = p ? 'Editar producto' : 'Nuevo producto';
+  $('pCat').innerHTML = '<option value="">Sin categoría</option>' + cats.map(c => '<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('');
+  $('pName').value = p?p.name:''; $('pPrice').value = p?p.price:''; $('pQty').value = p?p.qty:'';
+  $('pCat').value = p&&p.cat_id?p.cat_id:''; $('pDisc').value = p&&p.discount?p.discount:''; $('pEnd').value = p&&p.offer_end?p.offer_end:'';
+  $('pDesc').value = p?(p.descr||''):''; $('pFile').value=''; thumb(editImg); $('prodDlg').showModal();
+}
+$('newProd').onclick = () => openProd(null);
+$('pFile').addEventListener('change', async e => { const f=e.target.files[0]; if(!f) return; try{ editImg = await resize(f); thumb(editImg); }catch(_){ toast('Imagen no válida'); } });
+$('pNoImg').onclick = () => { editImg=''; thumb(''); };
+$('pCancel').onclick = () => $('prodDlg').close();
+$('pSave').onclick = async () => {
+  const name = $('pName').value.trim(); if(!name){ toast('El nombre es obligatorio'); return; }
+  const row = {id: editId || Date.now().toString(36)+Math.random().toString(36).slice(2,6), name,
+    price: Math.max(0, parseFloat($('pPrice').value)||0), qty: Math.max(0, parseInt($('pQty').value)||0),
+    descr: $('pDesc').value.trim(), img: editImg, cat_id: $('pCat').value || null,
+    discount: Math.min(100, Math.max(0, parseFloat($('pDisc').value)||0)), offer_end: $('pEnd').value || null, updated_at: new Date().toISOString()};
+  if(await save(() => api('tienda_productos', {method:'POST', body:row, prefer:'resolution=merge-duplicates,return=minimal'}))) $('prodDlg').close();
+};
+
+function renderCats(){
+  $('catList').innerHTML = cats.length ? cats.map(c => '<div class="crow"><i class="dot" style="background:'+esc(c.color)+'"></i><span>'+esc(c.name)+'</span><button data-ren="'+esc(c.id)+'">Renombrar</button><button class="danger" data-delc="'+esc(c.id)+'">Eliminar</button></div>').join('') : '<p style="color:var(--muted)">Aún no hay categorías.</p>';
+}
+$('manCats').onclick = () => { renderCats(); $('catDlg').showModal(); };
+$('cClose').onclick = () => $('catDlg').close();
+$('cAdd').onclick = async () => {
+  const name = $('cName').value.trim(); if(!name) return;
+  if(await save(() => api('tienda_categorias', {method:'POST', body:{id:Date.now().toString(36)+Math.random().toString(36).slice(2,5), name, color:$('cColor').value}, prefer:'return=minimal'}), 'Categoría creada')){ $('cName').value=''; renderCats(); }
+};
+$('catList').addEventListener('click', async e => {
+  const r = e.target.closest('[data-ren]'), d = e.target.closest('[data-delc]');
+  if(r){ const c = catOf(r.dataset.ren), n = (prompt('Nuevo nombre:', c.name)||'').trim(); if(n && await save(() => api('tienda_categorias?id=eq.'+encodeURIComponent(c.id), {method:'PATCH', body:{name:n}, prefer:'return=minimal'}), 'Categoría actualizada')) renderCats(); }
+  if(d && confirm('¿Eliminar la categoría? Sus productos quedarán sin categoría.')){
+    const id = d.dataset.delc; if(curCat === id) curCat = '';
+    if(await save(async () => { await api('tienda_productos?cat_id=eq.'+encodeURIComponent(id), {method:'PATCH', body:{cat_id:null}, prefer:'return=minimal'}); await api('tienda_categorias?id=eq.'+encodeURIComponent(id), {method:'DELETE'}); }, 'Categoría eliminada')) renderCats();
+  }
+});
+$('exportBtn').onclick = () => {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify({categorias:cats, productos:prods})], {type:'application/json'})); a.download = 'respaldo-tienda.json'; a.click();
+};
+
+ui(); render(); load();
+setInterval(() => { if(!document.hidden && !document.querySelector('dialog[open]')) load(true); }, 20000);
 </script>
 </body>
 </html>
